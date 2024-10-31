@@ -7,7 +7,7 @@ Discord Chakra is a Discord bot framework based on [discord.js](https://discord.
 Bootstrapping is extremely easy
 
 ```ts
-import { DiscordChakra } from "../lib/index.js";
+import { DiscordChakra } from "discord-chakra";
 import path from "node:path"
 import { Client, GatewayIntentBits } from "discord.js";
 

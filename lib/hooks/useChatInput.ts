@@ -9,8 +9,24 @@ export function provideInteraction(interaction: ChatInputCommandInteraction, cal
     })
 }
 
-export function getOptionString(key: string, required = false) {
+export function getContext() {
     const context = interactionProvider.getStore()
     if(!context) throw new Error("INVALID CONTEXT")
+        
+    return context
+}
+
+export function getOptionString(key: string, required = false) {
+    const context = getContext()
     return context.options.getString(key, required)
+}
+
+export function getOptionBool(key: string) {
+    const ctx = getContext()
+    return ctx.options.getBoolean(key)
+}
+
+export function getOptionUser(key: string) {
+    const ctx = getContext()
+    return ctx.options.getUser(key)
 }

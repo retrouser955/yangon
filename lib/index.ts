@@ -4,6 +4,7 @@ import { SlashCommandBuilder } from "discord.js";
 import { DecoReturnType, getAllCommandData } from "./decorators/Command";
 import { provideInteraction } from "./hooks/useChatInput";
 import { config } from "dotenv";
+import { transformToBuilders } from "./transformers/toSlashCommandBuilder";
 
 export type ChakraInitOptions = {
     commands: string;
@@ -50,7 +51,7 @@ export class DiscordChakra {
         this.debug("🚚 Packaged all commands")
 
         this.allCommands = getAllCommandData()
-        this.allCommandsFmt = this.transformCommands()
+        this.allCommandsFmt = transformToBuilders(this.allCommands, this.commandMap);
 
         this.handleInteraction()
     }
@@ -63,31 +64,6 @@ export class DiscordChakra {
             body: discordApiFormatCommands
         })
         this.debug(`⚛️  Deployed ${discordApiFormatCommands.length} command(s) to the Discord API`)
-    }
-
-    private transformCommands() {
-        return this.allCommands.map((v) => {
-            // this is hacky but it saves some startup time so
-            this.commandMap.set(v.name, v.execute)
-
-            const builder = new SlashCommandBuilder()
-                .setName(v.name)
-                .setDescription(v.description)
-
-            for (const option of v.options) {
-                switch(option.type) {
-                    case "STRING": {
-                        builder.addStringOption(opt => 
-                            opt.setName(option.name)
-                            .setDescription(option.description)
-                            .setRequired(option.required || false)
-                        )
-                    }
-                }
-            }
-
-            return builder
-        })
     }
 
     interactionHandler(interaction: ChatInputCommandInteraction) {

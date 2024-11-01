@@ -6,6 +6,8 @@ export function transformString(option: ChakraOption, builder: SlashCommandBuild
     builder.addStringOption(opt => {
         if(option.choices)
             opt.addChoices(...(option.choices as APIApplicationCommandOptionChoice<string>[]))
+        if(option.autocomplete)
+            opt.setAutocomplete(option.autocomplete)
 
         return opt
         .setName(option.name)
@@ -40,6 +42,11 @@ export function transformToBuilders(commands: DecoReturnType[], map: Map<string,
         const builder = new SlashCommandBuilder()
             .setName(v.name)
             .setDescription(v.description)
+        
+        if(v.contexts)
+            builder.setContexts(v.contexts)
+        if(v.ingerationTypes)
+            builder.setIntegrationTypes(v.ingerationTypes)
 
         for (const option of v.options) {
             switch(option.type) {

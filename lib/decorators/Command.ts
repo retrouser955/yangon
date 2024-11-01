@@ -4,7 +4,6 @@ const COMPILER_REGEX = /(\()?commandMetadataOption(String|Number|User|Boolean)(\
 const START_REMOVE_REGEX = /^((\()?commandMetadataOption(String|Number|User|Boolean)(\))?\()/
 const TYPE_MATCH_REGEX = /^((\()?commandMetadataOption(String|Number|User|Boolean)(\))?)/
 const TSC_BULLSHIT = /0,(\s)?[A-Za-z0-9]+?_[0-9]\./g
-const RESERVED_WORDS_BOOL = ["true", "false"]
 
 export type AllCommandOptionTypeRaw = "STRING" | "NUMBER" | "USER" | "BOOLEAN"
 
@@ -17,7 +16,7 @@ const optionType: Record<string, AllCommandOptionTypeRaw> = {
 
 export type CommandInitOptions = {
     category?: string,
-    context?: SlashCommandBuilder['contexts'],
+    contexts?: SlashCommandBuilder['contexts'],
     integrationTypes?: SlashCommandBuilder['integration_types']
 }
 
@@ -26,7 +25,8 @@ export type ChakraOption = {
     name: string,
     description: string,
     required: boolean,
-    choices?: APIApplicationCommandOptionChoice<string|number>[]
+    choices?: APIApplicationCommandOptionChoice<string|number>[],
+    autocomplete?: boolean
 }
 
 export type DecoReturnType = {
@@ -35,8 +35,8 @@ export type DecoReturnType = {
     description: string,
     execute: (ctx: ChatInputCommandInteraction) => void | Promise<void>,
     commandOptions?: CommandInitOptions,
-    ingerationType?: SlashCommandBuilder['contexts']
-    context?: SlashCommandBuilder['contexts']
+    ingerationTypes?: SlashCommandBuilder['integration_types']
+    contexts?: SlashCommandBuilder['contexts']
 }
 
 const allCommandData: DecoReturnType[] = []
@@ -103,7 +103,9 @@ export function command(description: string, options?: CommandInitOptions) {
             name,
             description,
             execute: deco.value!,
-            commandOptions: options
+            commandOptions: options,
+            contexts: options?.contexts,
+            ingerationTypes: options?.integrationTypes
         }
         
         allCommandData.push(returnData)

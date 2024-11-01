@@ -1,0 +1,29 @@
+{
+  "name": "discord-chakra",
+  "version": "0.0.1-beta.0",
+  "description": "A Discord.js framework making use of typescript's experimental decorators to provide an almost boilerplate free experience",
+  "main": "dist/lib/index.js",
+  "repository": "https://github.com/retrouser955/discord-chakra",
+  "author": "retro_ig",
+  "license": "MIT",
+  "packageManager": "yarn@4.3.1+sha512.af78262d7d125afbfeed740602ace8c5e4405cd7f4735c08feb327286b2fdb2390fbca01589bfd1f50b1240548b74806767f5a063c94b67e431aabd0d86f7774",
+  "devDependencies": {
+    "@discord-chakra/tsconfig": "workspace:^",
+    "discord.js": "^14.16.3",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  },
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsup"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  }
+}

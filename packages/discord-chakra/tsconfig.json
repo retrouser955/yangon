@@ -1,0 +1,4 @@
+{
+    "extends": "@discord-chakra/tsconfig/tsconfig.json",
+    "include": ["./lib/**/*.ts"]
+}

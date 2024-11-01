@@ -5,6 +5,12 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
+"@discord-chakra/tsconfig@workspace:^, @discord-chakra/tsconfig@workspace:packages/tsconfig":
+  version: 0.0.0-use.local
+  resolution: "@discord-chakra/tsconfig@workspace:packages/tsconfig"
+  languageName: unknown
+  linkType: soft
+
 "@discordjs/builders@npm:^1.9.0":
   version: 1.9.0
   resolution: "@discordjs/builders@npm:1.9.0"
@@ -495,11 +501,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 22.8.4
-  resolution: "@types/node@npm:22.8.4"
+  version: 22.8.6
+  resolution: "@types/node@npm:22.8.6"
   dependencies:
     undici-types: "npm:~6.19.8"
-  checksum: 10c0/f88d030480630194a9168772462ec09b2d86454f34368c46d2b7fda5dc6e14594b1576fcc5c35cc53b57a4d1e8dd2865a85ae81f34ded0d1af753a0f5d294c25
+  checksum: 10c0/d3a11f2549234a91a4c5d0ff35ab4bdcb7ba34db4d3f1d189be39b8bd41c19aac98d117150a95a9c5a9d45b1014135477ea240b2b8317c86ae3d3cf1c3b3f8f4
   languageName: node
   linkType: hard
 
@@ -588,6 +594,17 @@ __metadata:
   checksum: 10c0/9308baf0a7e4838a82bbfd11e01b1cb0f0cf2893bc1676c27c2a8c0e70cbae1c59120c3268517a8ae7fb6376b4639ef81ca22582611dbee4ed28df945134aaee
   languageName: node
   linkType: hard
+
+"bot@workspace:apps/bot":
+  version: 0.0.0-use.local
+  resolution: "bot@workspace:apps/bot"
+  dependencies:
+    "@discord-chakra/tsconfig": "workspace:^"
+    discord-chakra: "workspace:^"
+    discord.js: "npm:^14.16.3"
+    typescript: "npm:^5.6.3"
+  languageName: unknown
+  linkType: soft
 
 "brace-expansion@npm:^2.0.1":
   version: 2.0.1
@@ -733,10 +750,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-chakra@workspace:.":
+"discord-chakra-repo@workspace:.":
   version: 0.0.0-use.local
-  resolution: "discord-chakra@workspace:."
+  resolution: "discord-chakra-repo@workspace:."
   dependencies:
+    prettier: "npm:^3.2.5"
+    tsup: "npm:^8.3.5"
+    turbo: "npm:^2.2.3"
+    typescript: "npm:^5.6.3"
+  languageName: unknown
+  linkType: soft
+
+"discord-chakra@workspace:^, discord-chakra@workspace:packages/discord-chakra":
+  version: 0.0.0-use.local
+  resolution: "discord-chakra@workspace:packages/discord-chakra"
+  dependencies:
+    "@discord-chakra/tsconfig": "workspace:^"
     discord.js: "npm:^14.16.3"
     dotenv: "npm:^16.4.5"
     tsup: "npm:^8.3.5"
@@ -1427,6 +1456,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier@npm:^3.2.5":
+  version: 3.3.3
+  resolution: "prettier@npm:3.3.3"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: 10c0/b85828b08e7505716324e4245549b9205c0cacb25342a030ba8885aba2039a115dbcf75a0b7ca3b37bc9d101ee61fab8113fc69ca3359f2a226f1ecc07ad2e26
+  languageName: node
+  linkType: hard
+
 "proc-log@npm:^4.1.0, proc-log@npm:^4.2.0":
   version: 4.2.0
   resolution: "proc-log@npm:4.2.0"
@@ -1773,9 +1811,9 @@ __metadata:
   linkType: hard
 
 "tslib@npm:^2.6.2, tslib@npm:^2.6.3":
-  version: 2.8.0
-  resolution: "tslib@npm:2.8.0"
-  checksum: 10c0/31e4d14dc1355e9b89e4d3c893a18abb7f90b6886b089c2da91224d0a7752c79f3ddc41bc1aa0a588ac895bd97bb99c5bc2bfdb2f86de849f31caeb3ba79bbe5
+  version: 2.8.1
+  resolution: "tslib@npm:2.8.1"
+  checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
   languageName: node
   linkType: hard
 
@@ -1817,6 +1855,77 @@ __metadata:
     tsup: dist/cli-default.js
     tsup-node: dist/cli-node.js
   checksum: 10c0/7794953cbc784b7c8f14c4898d36a293b815b528d3098c2416aeaa2b4775dc477132cd12f75f6d32737dfd15ba10139c73f7039045352f2ba1ea7e5fe6fe3773
+  languageName: node
+  linkType: hard
+
+"turbo-darwin-64@npm:2.2.3":
+  version: 2.2.3
+  resolution: "turbo-darwin-64@npm:2.2.3"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"turbo-darwin-arm64@npm:2.2.3":
+  version: 2.2.3
+  resolution: "turbo-darwin-arm64@npm:2.2.3"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"turbo-linux-64@npm:2.2.3":
+  version: 2.2.3
+  resolution: "turbo-linux-64@npm:2.2.3"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"turbo-linux-arm64@npm:2.2.3":
+  version: 2.2.3
+  resolution: "turbo-linux-arm64@npm:2.2.3"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"turbo-windows-64@npm:2.2.3":
+  version: 2.2.3
+  resolution: "turbo-windows-64@npm:2.2.3"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"turbo-windows-arm64@npm:2.2.3":
+  version: 2.2.3
+  resolution: "turbo-windows-arm64@npm:2.2.3"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"turbo@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "turbo@npm:2.2.3"
+  dependencies:
+    turbo-darwin-64: "npm:2.2.3"
+    turbo-darwin-arm64: "npm:2.2.3"
+    turbo-linux-64: "npm:2.2.3"
+    turbo-linux-arm64: "npm:2.2.3"
+    turbo-windows-64: "npm:2.2.3"
+    turbo-windows-arm64: "npm:2.2.3"
+  dependenciesMeta:
+    turbo-darwin-64:
+      optional: true
+    turbo-darwin-arm64:
+      optional: true
+    turbo-linux-64:
+      optional: true
+    turbo-linux-arm64:
+      optional: true
+    turbo-windows-64:
+      optional: true
+    turbo-windows-arm64:
+      optional: true
+  bin:
+    turbo: bin/turbo
+  checksum: 10c0/5896cc1eb4b333ad11016f3b8a4ef5f13d3848c3b0abf4027edc53a0d10f3349bda5a7b880cc57ab1312b8c6371602f0ab932bc1c3902c65c674aef9c341af15
   languageName: node
   linkType: hard
 

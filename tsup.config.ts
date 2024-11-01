@@ -1,8 +1,9 @@
-import { defineConfig } from "tsup"
+import { defineConfig as defineConfigTsUp, type Options } from "tsup"
 
-export default defineConfig({
-    format: "cjs",
-    entry: ['./lib/index.ts'],
-    outDir: "./dist",
-    skipNodeModulesBundle: true
-})
+export default function defineConfig(config: Options | Options[]) {
+    return defineConfigTsUp({
+        format: "cjs",
+        skipNodeModulesBundle: true,
+        ...config
+    })
+}

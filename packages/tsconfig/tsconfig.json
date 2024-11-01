@@ -9,6 +9,5 @@
         "esModuleInterop": true,
         "experimentalDecorators": true
     },
-    "exclude": ["node_modules/"],
-    "include": ["./lib/**/*.ts", "./example/**/*.ts"]
+    "exclude": ["node_modules/"]
 }

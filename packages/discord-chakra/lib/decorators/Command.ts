@@ -41,10 +41,6 @@ export type DecoReturnType = {
 
 const allCommandData: DecoReturnType[] = []
 
-export function getAllCommandData() {
-    return allCommandData
-}
-
 export function command(description: string, options?: CommandInitOptions) {
     return function(_: any, pk: string, deco: TypedPropertyDescriptor<(ctx: ChatInputCommandInteraction) => any>) {
         const name = pk
@@ -67,7 +63,7 @@ export function command(description: string, options?: CommandInitOptions) {
                     const REGEX_COLON_MATCH = /^[^:]*/g
 
                     if(vFixed.includes("[")) {
-                        const chunks = vFixed.split("[")
+                        const chunks = vFixed.replace(/:((\s|\n)+)?\[/, ":DISCORD_CHAKRA_TOKEN_SPLIT_ARRAY[").split(":DISCORD_CHAKRA_TOKEN_SPLIT_ARRAY[")
                         const formatted = chunks.map((arr) => {
                             const matched = arr.match(REGEX_COLON_MATCH)
                             if(!matched) return arr
@@ -77,7 +73,7 @@ export function command(description: string, options?: CommandInitOptions) {
                             } else {
                                 return `"${matched[0].trim()}"${arr.replace(matched[0], "")}`
                             }
-                        }).join("[")
+                        }).join(":[")
 
                         return formatted
                     }
@@ -107,9 +103,13 @@ export function command(description: string, options?: CommandInitOptions) {
             contexts: options?.contexts,
             ingerationTypes: options?.integrationTypes
         }
-        
+
         allCommandData.push(returnData)
     }
+}
+
+export function getAllCommandData() {
+    return allCommandData
 }
 
 type BaseOption<T extends boolean = boolean> = {

@@ -1,6 +1,6 @@
-import { DiscordChakra } from "../lib/index.js";
-import path from "node:path"
 import { Client, GatewayIntentBits } from "discord.js";
+import { DiscordChakra } from "discord-chakra"
+import path from "node:path"
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds]
@@ -15,6 +15,6 @@ client.on("ready", () => {
     console.log(`${client.user?.username} is ready!`)
 })
 
-chakra.registerCommands(process.env.DISCORD_ID!, process.env.DISCORD_TOKEN!)
-
-client.login(process.env.DISCORD_TOKEN!)
+chakra.registerCommands(process.env.ID!, process.env.TOKEN!).then(() => {
+    client.login(process.env.TOKEN!)
+})

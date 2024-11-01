@@ -1,10 +1,10 @@
-import fs from "node:fs"
 import { ChatInputCommandInteraction, Client, REST, Routes } from "discord.js";
 import { SlashCommandBuilder } from "discord.js";
 import { DecoReturnType, getAllCommandData } from "./decorators/Command";
 import { provideInteraction } from "./hooks/useChatInput";
 import { config } from "dotenv";
 import { transformToBuilders } from "./transformers/toSlashCommandBuilder";
+import { getAllFilesInDir } from "./utils";
 
 export type ChakraInitOptions = {
     commands: string;
@@ -13,7 +13,7 @@ export type ChakraInitOptions = {
 
 export class DiscordChakra {
     allCommandsFmt: SlashCommandBuilder[]
-    allCommands: DecoReturnType[]
+    allCommands: DecoReturnType[] = []
     commandMap = new Map<string, (ctx: ChatInputCommandInteraction) => any>()
     client: Client
     options: ChakraInitOptions
@@ -25,7 +25,6 @@ export class DiscordChakra {
     constructor(client: Client, options: ChakraInitOptions) {
         this.client = client
         this.options = options
-        const allCommands = fs.readdirSync(options.commands).filter((f) => f.endsWith(".js"))
 
         this.debug("🕛 Loading environment files")
         config()
@@ -33,15 +32,15 @@ export class DiscordChakra {
 
         this.debug("🕛 Compiling files ...")
 
-        for(const command of allCommands) {
+        for(const command of getAllFilesInDir(options.commands)) {
             this.debug(`🗃️  Building ${command}`)
             try {
                 // @ts-expect-error
-                new require(`${options.commands}/${command}`)
+                new require(command)
             } catch {
                 try {
                     // @ts-expect-error
-                    new require(`${options.commands}/${command}`).default
+                    new require(command).default
                 } catch (err) {
                     throw new Error(`ERR_INVALID_FILE: Invalid file found. Command with name ${command} is not following the framework's rules`)
                 }

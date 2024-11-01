@@ -25,7 +25,8 @@ export type ChakraOption = {
     type: AllCommandOptionTypeRaw,
     name: string,
     description: string,
-    required: boolean
+    required: boolean,
+    choices?: APIApplicationCommandOptionChoice<string|number>[]
 }
 
 export type DecoReturnType = {
@@ -44,10 +45,7 @@ export function getAllCommandData() {
     return allCommandData
 }
 
-export function choices() {}
-
 export function command(description: string, options?: CommandInitOptions) {
-    const seen: string[] = []
     return function(_: any, pk: string, deco: TypedPropertyDescriptor<(ctx: ChatInputCommandInteraction) => any>) {
         const name = pk
         let allJsonBasedCommandParamsRaw = deco.value?.toString().replaceAll(TSC_BULLSHIT, "")
@@ -57,24 +55,45 @@ export function command(description: string, options?: CommandInitOptions) {
             if(!matcher) throw new Error("CANNOT FIND TYPE")
             let key = matcher[0].startsWith("(") && matcher[0].endsWith(")") ? matcher[0].substring(1).slice(0, -1) : matcher[0]
             const type = optionType[key] || "UNKNOWN"
-            let obj: Record<string, string|boolean> = {
+            let obj: Record<string, string|boolean|APIApplicationCommandOptionChoice<string|number>[]> = {
                 type
             }
-            const commandOptions = v.trim()
+            const commandOptionsRaw = v.trim()
                 .replace(START_REMOVE_REGEX, "")
                 .replace(")", "")
                 .split(",")
+                .map(v => {
+                    const vFixed = v
+                    const REGEX_COLON_MATCH = /^[^:]*/g
 
-            for(const option of commandOptions) {
-                const tup = option.split(":")
-                const keyRaw = tup[0].replaceAll(/\s|\n|{/g, "")
-                const key = keyRaw.startsWith("\"") && keyRaw.endsWith("\"") ? keyRaw.substring(1).slice(0, -1) : keyRaw
-                if(RESERVED_WORDS_BOOL.includes(tup[1].trim())) {
-                    obj[key] = tup[1].trim() === "true"
-                } else {
-                    // @ts-expect-error
-                    obj[key] = tup[1].match(/".+?"/sg)[0].substring(1).slice(0, -1)
-                }
+                    if(vFixed.includes("[")) {
+                        const chunks = vFixed.split("[")
+                        const formatted = chunks.map((arr) => {
+                            const matched = arr.match(REGEX_COLON_MATCH)
+                            if(!matched) return arr
+
+                            if(matched[0].trim().startsWith("{")) {
+                                return `{"${matched[0].trim().replace("{", "").trim()}"${arr.replace(matched[0], "")}`
+                            } else {
+                                return `"${matched[0].trim()}"${arr.replace(matched[0], "")}`
+                            }
+                        }).join("[")
+
+                        return formatted
+                    }
+
+                    const match = vFixed.match(REGEX_COLON_MATCH)
+                    if(!match) return vFixed
+                    const wordRaw = match[0].trim().includes("[") ? match[0].trim().split('[')[1] : match[0].trim()
+                    let word = wordRaw.startsWith("{") ? `{"${wordRaw.replace("{", "").trim()}"${vFixed.trim().replace(wordRaw.trim(), "")}` : `"${wordRaw}"${vFixed.trim().replace(wordRaw, "")}`
+                    return word
+                })
+            
+            const commandOptions = commandOptionsRaw.join(",").replaceAll("\n", "")
+            
+            obj = {
+                ...obj,
+                ...(JSON.parse(commandOptions))
             }
 
             return obj
@@ -86,6 +105,7 @@ export function command(description: string, options?: CommandInitOptions) {
             execute: deco.value!,
             commandOptions: options
         }
+        
         allCommandData.push(returnData)
     }
 }
@@ -97,7 +117,8 @@ type BaseOption<T extends boolean = boolean> = {
 }
 
 type StringOption<T extends boolean = boolean> = {
-    autocomplete?: boolean;
+    autocomplete?: boolean,
+    choices?: APIApplicationCommandOptionChoice<string>[]
 } & BaseOption<T>
 
 export type InteractionOptionReturnData<T extends boolean, R> = T extends true ? R : R | null

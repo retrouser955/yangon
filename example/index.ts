@@ -11,6 +11,10 @@ const chakra = new DiscordChakra(client, {
     debug: true
 })
 
-// chakra.registerCommands(process.env.DISCORD_ID!, process.env.DISCORD_TOKEN!)
+client.on("ready", () => {
+    console.log(`${client.user?.username} is ready!`)
+})
 
-// client.login(process.env.DISCORD_TOKEN!)
+chakra.registerCommands(process.env.DISCORD_ID!, process.env.DISCORD_TOKEN!)
+
+client.login(process.env.DISCORD_TOKEN!)

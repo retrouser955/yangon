@@ -42,7 +42,7 @@ export class DiscordChakra {
                 try {
                     // @ts-expect-error
                     new require(`${options.commands}/${command}`).default
-                } catch {
+                } catch (err) {
                     throw new Error(`ERR_INVALID_FILE: Invalid file found. Command with name ${command} is not following the framework's rules`)
                 }
             }

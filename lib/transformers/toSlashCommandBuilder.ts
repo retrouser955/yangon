@@ -1,14 +1,17 @@
 import { ChakraOption, DecoReturnType } from "../decorators/Command";
-import type { ChatInputCommandInteraction } from "discord.js";
+import type { APIApplicationCommandOptionChoice, ChatInputCommandInteraction } from "discord.js";
 import { SlashCommandBuilder } from "discord.js";
 
 export function transformString(option: ChakraOption, builder: SlashCommandBuilder) {
-    builder.addStringOption(opt => 
-        opt
-            .setName(option.name)
-            .setDescription(option.description)
-            .setRequired(option.required || false)
-    )
+    builder.addStringOption(opt => {
+        if(option.choices)
+            opt.addChoices(...(option.choices as APIApplicationCommandOptionChoice<string>[]))
+
+        return opt
+        .setName(option.name)
+        .setDescription(option.description)
+        .setRequired(option.required || false)
+    })
 }
 
 export function transformUser(option: ChakraOption, builder: SlashCommandBuilder) {

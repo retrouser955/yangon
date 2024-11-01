@@ -2,7 +2,6 @@ import { ChatInputCommandInteraction, Client, REST, Routes } from "discord.js";
 import { SlashCommandBuilder } from "discord.js";
 import { DecoReturnType, getAllCommandData } from "./decorators/Command";
 import { provideInteraction } from "./hooks/useChatInput";
-import { config } from "dotenv";
 import { transformToBuilders } from "./transformers/toSlashCommandBuilder";
 import { getAllFilesInDir } from "./utils";
 
@@ -27,7 +26,7 @@ export class DiscordChakra {
         this.options = options
 
         this.debug("🕛 Loading environment files")
-        config()
+        process.loadEnvFile()
         this.debug("📦 Loaded environment files")
 
         this.debug("🕛 Compiling files ...")

@@ -1,81 +1,85 @@
-# Turborepo starter
+# Discord Chakra
 
-This is an official starter Turborepo.
+Discord Chakra is a Discord App framework focused on minmal templating by utilizing TypeScript decorators. Due to decorators being experimental, Discord Chakra only works with TypeScript. If you are looking for a JavaScript based framework, [commandkit](https://commandkit.js.org) and [sapphire](https://sapphirejs.dev) are other well-maintained libraries.
 
-## Using this example
+# Bootstraping
 
-Run the following command:
+Bootstraping Discord Chakra is easy. You can do it in just 5 lines!
 
-```sh
-npx create-turbo@latest
+```ts
+import { Client, GatewayIntentBits } from "discord.js";
+import { DiscordChakra } from "discord-chakra"
+import path from "node:path"
+
+const client = new Client({
+    intents: [GatewayIntentBits.Guilds]
+})
+
+const chakra = new DiscordChakra(client, {
+    commands: path.join(__dirname, "commands"),
+    debug: true/* Set this to false to disallow Discord Chakra to print to the terminal */
+})
+
+client.on("ready", () => {
+    console.log(`${client.user?.username} is ready!`)
+})
+
+// Discord Chakra will automatically load environment files for you!
+chakra.registerCommands(process.env.ID!, process.env.TOKEN!).then(() => {
+    client.login(process.env.TOKEN!)
+})
 ```
 
-## What's inside?
+### In your commands folder
 
-This Turborepo includes the following packages/apps:
+```ts
+// commands/ping.ts
+import { command } from "discord-chakra";
+import { ChatInputCommandInteraction } from "discord.js";
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+export default class PingCommand {
+    // The decorator will detect the function's name and automatically build the command accordingly
+    // The only requried parameter of the decorator is the description
+    @command("Check the ping of the bot")
+    ping(ctx: ChatInputCommandInteraction) {
+        ctx.reply("🏓 Pong! My ping is `" + ctx.client.ws.ping + "ms`")
+    }
+}
 ```
 
-### Develop
+### But what if I want options?
 
-To develop all apps and packages, run the following command:
+Easy! Discord Chakra's `@command` decorator does more than just checking the name of your command! It also check your function for any **special** 'functions' that allows you to register and get the option of the slash command. The names of the function are a bit unpleasent as we had to make it as specific as possible for the detection to work. Let's have a look at a command that replies with a string based on user input.
 
+```ts
+// commands/animal.ts
+import { command, commandMetadataOptionString } from "discord-chakra";
+import { ChatInputCommandInteraction } from "discord.js";
+
+export default class AnimalCommand {
+    @command("Which animal do you like")
+    animal(ctx: ChatInputCommandInteraction) {
+        // The tokenizer will detect that this function is being used and will automatically register the option
+        // As a bonus, it also elimanates the use of <ChatInputCommandInteraction>.options.getString()
+        const animal = commandMetadataOptionString({
+            name: "name",
+            description: "Name of the animal",
+            choices: [
+                {
+                    name: "cat",
+                    value: "cat"
+                },
+                {
+                    name: "dog",
+                    value: "dog"
+                }
+            ],
+            required: true
+        })
+
+        const toSay = animal === "cat" ? "😺 I love cats too!" : "🐶 Dogs are super cute!"
+
+        ctx.reply(toSay)
+    }
+}
 ```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)

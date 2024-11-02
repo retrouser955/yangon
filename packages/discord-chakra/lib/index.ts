@@ -1,7 +1,7 @@
-import { ChatInputCommandInteraction, Client, REST, Routes } from "discord.js";
+import { AutocompleteInteraction, ChatInputCommandInteraction, Client, REST, Routes } from "discord.js";
 import { SlashCommandBuilder } from "discord.js";
 import { DecoReturnType, getAllCommandData } from "./decorators/Command";
-import { provideInteraction } from "./hooks/useChatInput";
+import { provideAutocomplete, provideInteraction } from "./hooks/useChatInput";
 import { config } from "dotenv";
 import { transformToBuilders } from "./transformers/toSlashCommandBuilder";
 import { getAllFilesInDir } from "./utils";
@@ -9,12 +9,13 @@ import { getAllFilesInDir } from "./utils";
 export type ChakraInitOptions = {
     commands: string;
     debug?: boolean;
+    context?: Record<string, any>;
 }
 
 export class DiscordChakra {
     allCommandsFmt: SlashCommandBuilder[]
     allCommands: DecoReturnType[] = []
-    commandMap = new Map<string, (ctx: ChatInputCommandInteraction) => any>()
+    commandMap = new Map<string, DecoReturnType>()
     client: Client
     options: ChakraInitOptions
 
@@ -42,6 +43,7 @@ export class DiscordChakra {
                     // @ts-expect-error
                     new require(command).default
                 } catch (err) {
+		    console.log(err)
                     throw new Error(`ERR_INVALID_FILE: Invalid file found. Command with name ${command} is not following the framework's rules`)
                 }
             }
@@ -70,10 +72,14 @@ export class DiscordChakra {
         
         const command = this.commandMap.get(name)
 
-        if(!command) return interaction.reply("Command not found")
+        if(!command) return interaction.reply("Command not found") // TODO: Make this configurable
 
-        provideInteraction(interaction, async () => {
-            await command(interaction)
+        provideInteraction({
+            interaction,
+            context: this.options.context ?? {}
+        }, async () => {
+            const execute = command.execute
+            await execute(interaction)
             this.debug("⚛️  Command dispatch of " + interaction.commandName + " successful!")
         })
     }
@@ -83,9 +89,25 @@ export class DiscordChakra {
             if(interaction instanceof ChatInputCommandInteraction) {
                 this.debug(`🗣️  DISCORD API: Got command ${interaction.commandName}. Executing ...`)
                 this.interactionHandler(interaction)
+            } else if (interaction instanceof AutocompleteInteraction) {
+                const currentFocused = interaction.options.getFocused(true).name
+                const { commandName } = interaction
+
+                const command = this.commandMap.get(commandName)
+                
+                if(!command) return interaction.respond([]) // TODO: Make this configurable
+
+                provideAutocomplete({
+                    context: this.options.context || {}
+                }, () => {
+                    const executer = command.options.find(v => v.name === currentFocused)
+                    if(!executer || !executer.autocompleteHandler) throw new Error("Cannot find autocomplete handler for " + command.name)
+                    executer.autocompleteHandler(interaction)
+                })
             }
         })
     }
 }
 
 export * from "./decorators/Command"
+export * from "./hooks/useChatInput"

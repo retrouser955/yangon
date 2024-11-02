@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, SlashCommandBuilder, User, type ChatInputCommandInteraction } from "discord.js";
+import { APIApplicationCommandOptionChoice, AutocompleteInteraction, SlashCommandBuilder, User, type ChatInputCommandInteraction } from "discord.js";
 import { getOptionBool, getOptionNumber, getOptionString, getOptionUser } from "../hooks/useChatInput";
 const COMPILER_REGEX = /(\()?commandMetadataOption(String|Number|User|Boolean)(\))?((\s|\n)+)?\(.+?\)/sg
 const START_REMOVE_REGEX = /^((\()?commandMetadataOption(String|Number|User|Boolean)(\))?\()/
@@ -26,7 +26,8 @@ export type ChakraOption = {
     description: string,
     required: boolean,
     choices?: APIApplicationCommandOptionChoice<string|number>[],
-    autocomplete?: boolean
+    autocomplete?: boolean,
+    autocompleteHandler?: ChakraAutoCompleteHandler
 }
 
 export type DecoReturnType = {
@@ -41,15 +42,38 @@ export type DecoReturnType = {
 
 const allCommandData: DecoReturnType[] = []
 
+export type ChakraAutoCompleteHandler = (interaction: AutocompleteInteraction) => any
+
+export function autocomplete(...args: [...string[], ChakraAutoCompleteHandler]) {
+    const handler = args.pop()
+    if(typeof handler !== 'function') throw new SyntaxError("Cannot create an autocomplete handler without a handler function")
+
+    return function(_: any, commandName: string, _deco: TypedPropertyDescriptor<(ctx: ChatInputCommandInteraction) => any>) {
+        const cmd = allCommandData.findIndex((v) => v.name === commandName)
+        const command = allCommandData[cmd]
+        if(!command) throw new SyntaxError("Cannot find the command. Make sure @autocomplete is used before @command")
+
+        for(const option of args) {
+            if(typeof option !== "string") throw new SyntaxError("Cannot have multiple handlers")
+            const optIndex = command.options.findIndex((v) => v.name === option)
+            const opt = command.options[optIndex]
+            if(!opt) throw new Error("Unable to find that option. Make sure you are registering it!")
+            if(opt.type !== "STRING") throw new Error("Autocomplete is only valid on string type options")
+
+            allCommandData[cmd].options[optIndex].autocompleteHandler = handler
+        }
+    }
+}
+
 export function command(description: string, options?: CommandInitOptions) {
-    return function(_: any, pk: string, deco: TypedPropertyDescriptor<(ctx: ChatInputCommandInteraction) => any>) {
-        const name = pk
+    return function(_: any, name: string, deco: TypedPropertyDescriptor<(ctx: ChatInputCommandInteraction) => any>) {
         let allJsonBasedCommandParamsRaw = deco.value?.toString().replaceAll(TSC_BULLSHIT, "")
         const allJsonBasedCommandParamsMatched = allJsonBasedCommandParamsRaw?.match(COMPILER_REGEX)
         const allJsonBasedCommandParams = allJsonBasedCommandParamsMatched == undefined ? [] : allJsonBasedCommandParamsMatched.map((v) => {
             const matcher = v.match(TYPE_MATCH_REGEX)
             if(!matcher) throw new Error("CANNOT FIND TYPE")
             let key = matcher[0].startsWith("(") && matcher[0].endsWith(")") ? matcher[0].substring(1).slice(0, -1) : matcher[0]
+	    if(key.endsWith(")")) key = key.slice(0, -1)
             const type = optionType[key] || "UNKNOWN"
             let obj: Record<string, string|boolean|APIApplicationCommandOptionChoice<string|number>[]> = {
                 type
@@ -95,7 +119,7 @@ export function command(description: string, options?: CommandInitOptions) {
             return obj
         })
         const returnData: DecoReturnType = {
-            options: allJsonBasedCommandParams as ChakraOption[] || [],
+            options: allJsonBasedCommandParams as Omit<ChakraOption, "autocompleteHandler">[] || [],
             name,
             description,
             execute: deco.value!,

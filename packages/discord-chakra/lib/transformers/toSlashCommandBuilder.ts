@@ -54,10 +54,10 @@ export function transformBool(option: ChakraOption, builder: SlashCommandBuilder
     builder.addBooleanOption(opt => defaultOpt(opt, option))
 }
 
-export function transformToBuilders(commands: DecoReturnType[], map: Map<string, (ctx: ChatInputCommandInteraction) => any>) {
+export function transformToBuilders(commands: DecoReturnType[], map: Map<string, DecoReturnType>) {
     return commands.map((v) => {
         // this is hacky but it saves some startup time so
-        map.set(v.name, v.execute)
+        map.set(v.name, v)
 
         const builder = new SlashCommandBuilder()
             .setName(v.name)

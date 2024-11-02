@@ -1,5 +1,5 @@
 import { APIApplicationCommandOptionChoice, SlashCommandBuilder, User, type ChatInputCommandInteraction } from "discord.js";
-import { getOptionBool, getOptionString, getOptionUser } from "../hooks/useChatInput";
+import { getOptionBool, getOptionNumber, getOptionString, getOptionUser } from "../hooks/useChatInput";
 const COMPILER_REGEX = /(\()?commandMetadataOption(String|Number|User|Boolean)(\))?((\s|\n)+)?\(.+?\)/sg
 const START_REMOVE_REGEX = /^((\()?commandMetadataOption(String|Number|User|Boolean)(\))?\()/
 const TYPE_MATCH_REGEX = /^((\()?commandMetadataOption(String|Number|User|Boolean)(\))?)/
@@ -112,15 +112,20 @@ export function getAllCommandData() {
     return allCommandData
 }
 
-type BaseOption<T extends boolean = boolean> = {
+export type BaseOption<T extends boolean = boolean> = {
     name: string,
     description: string
     required?: T
 }
 
-type StringOption<T extends boolean = boolean> = {
+export type StringOption<T extends boolean = boolean> = {
     autocomplete?: boolean,
     choices?: APIApplicationCommandOptionChoice<string>[]
+} & BaseOption<T>
+
+export type NumberOption<T extends boolean = boolean> = {
+    min?: number,
+    max?: number
 } & BaseOption<T>
 
 export type InteractionOptionReturnData<T extends boolean, R> = T extends true ? R : R | null
@@ -135,4 +140,8 @@ export function commandMetadataOptionBoolean<T extends boolean>(option: BaseOpti
 
 export function commandMetadataOptionUser<T extends boolean>(option: BaseOption<T>): InteractionOptionReturnData<T, User> {
     return getOptionUser(option.name)!
+}
+
+export function commandMetadataOptionNumber<T extends boolean>(option: NumberOption<T>): InteractionOptionReturnData<T, number> {
+    return getOptionNumber(option.name)!
 }

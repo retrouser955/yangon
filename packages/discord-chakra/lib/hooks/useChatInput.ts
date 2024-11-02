@@ -30,3 +30,8 @@ export function getOptionUser(key: string) {
     const ctx = getContext()
     return ctx.options.getUser(key)
 }
+
+export function getOptionNumber(key: string) {
+    const ctx = getContext()
+    return ctx.options.getNumber(key)
+}

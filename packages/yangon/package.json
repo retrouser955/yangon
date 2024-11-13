@@ -1,0 +1,12 @@
+{
+    "name": "@yangon-framework/core",
+    "version": "0.0.1-beta",
+    "devDependencies": {
+        "@yangon-framework/tsconfig": "workspace:^",
+        "eris": "^0.18.0"
+    },
+    "dependencies": {
+        "reflect-metadata": "^0.2.2"
+    },
+    "main": "dist/index.js"
+}

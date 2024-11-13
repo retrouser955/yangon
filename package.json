@@ -1,5 +1,5 @@
 {
-  "name": "discord-chakra-repo",
+  "name": "yangon-repo",
   "private": true,
   "scripts": {
     "build": "turbo build",

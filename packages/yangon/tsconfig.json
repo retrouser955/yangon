@@ -1,0 +1,4 @@
+{
+    "extends": "@yangon-framework/tsconfig/tsconfig.json",
+    "include": ["./src/**/*.ts"]
+}

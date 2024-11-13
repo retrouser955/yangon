@@ -1,5 +1,0 @@
-.env
-dist/
-node_modules/
-dist/example
-lib/

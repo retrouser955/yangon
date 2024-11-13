@@ -1,9 +1,0 @@
-{
-    "extends": "@discord-chakra/tsconfig/tsconfig.json",
-    "include": ["./src/**/*.ts"],
-    "compilerOptions": {
-        "moduleResolution": "Node16",
-        "module": "Node16",
-        "outDir": "./dist"
-    }
-}

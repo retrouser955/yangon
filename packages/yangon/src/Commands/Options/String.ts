@@ -11,4 +11,8 @@ export class StringOption<T extends boolean = true> extends BaseCommandOption<In
     constructor(options: StringOptionOptions<T>, option: NotInCommand<T, InteractionDataOptionsString>) {
         super(options, option)
     }
+
+    toString() {
+        return this.value
+    }
 }

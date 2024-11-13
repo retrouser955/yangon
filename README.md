@@ -35,13 +35,13 @@ yangon.registerCommands(process.env.ID!, process.env.TOKEN!).then(() => {
 ```ts
 // commands/ping.ts
 import { Command } from "@yangon-framework/core";
-import { ChatInputCommandInteraction } from "discord.js";
+import { CommandInteraction } from "eris";
 
 export default class PingCommand {
     // The decorator will detect the function's name and automatically build the command accordingly
     // The only requried parameter of the decorator is the description
     @Command("Check the ping of the bot")
-    ping(ctx: ChatInputCommandInteraction) {
+    ping(ctx: CommandInteraction) {
         ctx.reply("🏓 Pong! My ping is `" + ctx.client.ws.ping + "ms`")
     }
 }

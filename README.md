@@ -49,14 +49,14 @@ export default class PingCommand {
 
 ### But what if I want options?
 
-Easy!, Yangon provides you with yet another decorator `@Option` which automatically registers the function parameter as the option on the slash command. This is taken as an inspiration from [poise](https://github.com/serenity-rs/poise), a Rust Discord bot framework making use of Macros.
+Easy! Yangon provides you with yet another decorator `@Option` which automatically registers the function parameter as the option on the slash command. This is taken as an inspiration from [poise](https://github.com/serenity-rs/poise), a Rust Discord bot framework making use of Macros.
 
 ```ts
 // commands/say.ts
 import { Command, Option, StringOption } from "@yangon-framework/core";
 import { CommandInteraction } from "eris";
 
-export default class AnimalCommand {
+export default class SayCommand {
     @Command("Get the bot to repeat something")
     say(
         ctx: CommandInteraction,

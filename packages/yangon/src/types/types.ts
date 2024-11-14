@@ -1,5 +1,5 @@
 import type { InteractionDataOptionsString, InteractionDataOptionsBoolean, InteractionDataOptionsChannel, InteractionDataOptionsInteger, InteractionDataOptionsMentionable, InteractionDataOptionsNumber, InteractionDataOptionsRole, InteractionDataOptionsUser } from "eris";
-import { BooleanOption, ChannelOption, IntegerOption, MentionableOption, NumberOption, RoleOption, StringOption, UserOption } from "../Commands/Options";
+import type { BooleanOption, ChannelOption, IntegerOption, MentionableOption, NumberOption, RoleOption, StringOption, UserOption } from "../Commands/Options";
 
 export type YangonChatInputArgs = (
     InteractionDataOptionsString |
@@ -14,7 +14,13 @@ export type YangonChatInputArgs = (
 
 export type YangonOptionTypeStrings = (
     "StringOption" |
-    "UserOption"
+    "UserOption" |
+    "BooleanOption" |
+    "ChannelOption" |
+    "IntegerOption" |
+    "MentionableOption" |
+    "NumberOption" |
+    "RoleOption"
 )
 
 export type YangonChatInputExecuteFunctionArgs<T extends boolean = false> = (

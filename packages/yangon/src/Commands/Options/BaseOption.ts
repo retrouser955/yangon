@@ -2,6 +2,7 @@ import { YangonChatInputArgs } from "../../types/types";
 import { Constants } from "eris";
 import { UserOption } from "./User";
 import { StringOption } from "./String";
+import { BooleanOption } from "./Boolean";
 
 const { ApplicationCommandOptionTypes } = Constants;
 
@@ -48,6 +49,13 @@ export class BaseCommandOption<R extends YangonChatInputArgs, T extends boolean 
                     description: undefined,
                     required: true,
                     choices: undefined,
+                    at: undefined
+                }, data)
+            case ApplicationCommandOptionTypes.BOOLEAN:
+                return new BooleanOption<true>({
+                    name: data.name,
+                    description: undefined,
+                    required: true,
                     at: undefined
                 }, data)
             default:

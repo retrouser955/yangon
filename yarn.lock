@@ -391,6 +391,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^22.9.0":
+  version: 22.9.0
+  resolution: "@types/node@npm:22.9.0"
+  dependencies:
+    undici-types: "npm:~6.19.8"
+  checksum: 10c0/3f46cbe0a49bab4ba30494025e4c8a6e699b98ac922857aa1f0209ce11a1313ee46e6808b8f13fe5b8b960a9d7796b77c8d542ad4e9810e85ef897d5593b5d51
+  languageName: node
+  linkType: hard
+
 "@yangon-framework/core@workspace:packages/yangon":
   version: 0.0.0-use.local
   resolution: "@yangon-framework/core@workspace:packages/yangon"
@@ -1752,6 +1761,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:~6.19.8":
+  version: 6.19.8
+  resolution: "undici-types@npm:6.19.8"
+  checksum: 10c0/078afa5990fba110f6824823ace86073b4638f1d5112ee26e790155f481f2a868cc3e0615505b6f4282bdf74a3d8caad715fd809e870c2bb0704e3ea6082f344
+  languageName: node
+  linkType: hard
+
 "unique-filename@npm:^3.0.0":
   version: 3.0.0
   resolution: "unique-filename@npm:3.0.0"
@@ -1858,6 +1874,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "yangon-repo@workspace:."
   dependencies:
+    "@types/node": "npm:^22.9.0"
     prettier: "npm:^3.2.5"
     tsup: "npm:^8.3.5"
     turbo: "npm:^2.2.3"

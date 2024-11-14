@@ -1,8 +1,6 @@
 import { YangonChatInputArgs } from "../../types/types";
 import { Constants } from "eris";
-import { UserOption } from "./User";
-import { StringOption } from "./String";
-import { BooleanOption } from "./Boolean";
+import { UserOption, StringOption, BooleanOption, ChannelOption, IntegerOption, MentionableOption, NumberOption, RoleOption } from "./index";
 
 const { ApplicationCommandOptionTypes } = Constants;
 
@@ -47,7 +45,6 @@ export class BaseCommandOption<R extends YangonChatInputArgs, T extends boolean 
                 return new StringOption<true>({
                     name: data.name,
                     description: undefined,
-                    required: true,
                     choices: undefined,
                     at: undefined
                 }, data)
@@ -55,7 +52,36 @@ export class BaseCommandOption<R extends YangonChatInputArgs, T extends boolean 
                 return new BooleanOption<true>({
                     name: data.name,
                     description: undefined,
-                    required: true,
+                    at: undefined
+                }, data)
+            case ApplicationCommandOptionTypes.CHANNEL:
+                return new ChannelOption<true>({
+                    name: data.name,
+                    description: undefined,
+                    at: undefined
+                }, data)
+            case ApplicationCommandOptionTypes.INTEGER:
+                return new IntegerOption<true>({
+                    name: data.name,
+                    description: undefined,
+                    at: undefined
+                }, data)
+            case ApplicationCommandOptionTypes.MENTIONABLE:
+                return new MentionableOption<true>({
+                    name: data.name,
+                    description: undefined,
+                    at: undefined
+                }, data)
+            case ApplicationCommandOptionTypes.NUMBER:
+                return new NumberOption<true>({
+                    name: data.name,
+                    description: undefined,
+                    at: undefined
+                }, data)
+            case ApplicationCommandOptionTypes.ROLE:
+                return new RoleOption<true>({
+                    name: data.name,
+                    description: undefined,
                     at: undefined
                 }, data)
             default:

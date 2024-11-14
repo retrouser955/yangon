@@ -15,6 +15,8 @@ export interface YangonBuildOption {
     max?: number
 }
 
+export type YangonCommandParamsOption = Omit<YangonBuildOption, "name" | "description" | "required" | "at" | "type">
+
 const FUNCTION_REGEX = /\(.+?\)/gm
 
 export function extractArgs(func: string, at: number) {
@@ -49,7 +51,7 @@ export function buildOption(option: YangonBuildOption): YangonChatInputExecuteFu
     }
 }
 
-export function Option(description: string, required: boolean) {
+export function Option(description: string, required: boolean, options?: YangonCommandParamsOption) {
     return function(target: { [key: string]: YangonChatInputExecuteFunction }, cmdName: string, deco: number) {
         let command = commands.get(cmdName)
 
@@ -66,7 +68,8 @@ export function Option(description: string, required: boolean) {
             description,
             type,
             required,
-            at: deco
+            at: deco,
+            ...(options)
         })
 
         command.addOption(option)

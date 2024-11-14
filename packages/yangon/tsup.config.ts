@@ -1,6 +1,6 @@
 import defineConfig from "../../tsup.config"
 
-defineConfig({
+export default defineConfig({
     dts: true,
-    entry: ["./lib/index.ts"]
+    entry: ["./src/index.ts"]
 })

@@ -8,5 +8,8 @@
     "dependencies": {
         "reflect-metadata": "^0.2.2"
     },
-    "main": "dist/index.js"
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsup"
+    }
 }

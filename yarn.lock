@@ -401,6 +401,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@yangon-framework/syringe@workspace:packages/syringe":
+  version: 0.0.0-use.local
+  resolution: "@yangon-framework/syringe@workspace:packages/syringe"
+  dependencies:
+    "@yangon-framework/tsconfig": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
 "@yangon-framework/tsconfig@workspace:^, @yangon-framework/tsconfig@workspace:packages/tsconfig":
   version: 0.0.0-use.local
   resolution: "@yangon-framework/tsconfig@workspace:packages/tsconfig"

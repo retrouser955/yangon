@@ -1,0 +1,7 @@
+{
+  "name": "@yangon-framework/syringe",
+  "packageManager": "yarn@4.5.1",
+  "devDependencies": {
+    "@yangon-framework/tsconfig": "workspace:^"
+  }
+}

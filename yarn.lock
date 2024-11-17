@@ -516,6 +516,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ts-morph/common@npm:~0.25.0":
+  version: 0.25.0
+  resolution: "@ts-morph/common@npm:0.25.0"
+  dependencies:
+    minimatch: "npm:^9.0.4"
+    path-browserify: "npm:^1.0.1"
+    tinyglobby: "npm:^0.2.9"
+  checksum: 10c0/c67e66db678e44886e9823e6482834acebfae0ea52ccbfa2af1ca9abfe5a9774dad6e852c8f480909bc196175f17e15454af71d7a41a1c137db09e74f046a830
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:1.0.6":
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
@@ -532,7 +543,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yangon-framework/core@workspace:packages/yangon":
+"@yangon-framework/core@workspace:^, @yangon-framework/core@workspace:packages/yangon":
   version: 0.0.0-use.local
   resolution: "@yangon-framework/core@workspace:packages/yangon"
   dependencies:
@@ -542,7 +553,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@yangon-framework/syringe@workspace:packages/syringe":
+"@yangon-framework/shwedagon@workspace:packages/shwedagon":
+  version: 0.0.0-use.local
+  resolution: "@yangon-framework/shwedagon@workspace:packages/shwedagon"
+  dependencies:
+    "@yangon-framework/tsconfig": "workspace:^"
+    ts-morph: "npm:^24.0.0"
+    typescript: "npm:^5.6.3"
+  languageName: unknown
+  linkType: soft
+
+"@yangon-framework/syringe@workspace:^, @yangon-framework/syringe@workspace:packages/syringe":
   version: 0.0.0-use.local
   resolution: "@yangon-framework/syringe@workspace:packages/syringe"
   dependencies:
@@ -626,6 +647,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bot@workspace:apps/bot":
+  version: 0.0.0-use.local
+  resolution: "bot@workspace:apps/bot"
+  dependencies:
+    "@yangon-framework/core": "workspace:^"
+    "@yangon-framework/syringe": "workspace:^"
+    "@yangon-framework/tsconfig": "workspace:^"
+    dotenv: "npm:^16.4.5"
+    eris: "npm:^0.18.0"
+    typescript: "npm:^5.6.3"
+  languageName: unknown
+  linkType: soft
+
 "brace-expansion@npm:^2.0.1":
   version: 2.0.1
   resolution: "brace-expansion@npm:2.0.1"
@@ -696,6 +730,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"code-block-writer@npm:^13.0.3":
+  version: 13.0.3
+  resolution: "code-block-writer@npm:13.0.3"
+  checksum: 10c0/87db97b37583f71cfd7eced8bf3f0a0a0ca53af912751a734372b36c08cd27f3e8a4878ec05591c0cd9ae11bea8add1423e132d660edd86aab952656dd41fd66
+  languageName: node
+  linkType: hard
+
 "color-convert@npm:^2.0.1":
   version: 2.0.1
   resolution: "color-convert@npm:2.0.1"
@@ -746,6 +787,13 @@ __metadata:
     supports-color:
       optional: true
   checksum: 10c0/1471db19c3b06d485a622d62f65947a19a23fbd0dd73f7fd3eafb697eec5360cde447fb075919987899b1a2096e85d35d4eb5a4de09a57600ac9cf7e6c8e768b
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.4.5":
+  version: 16.4.5
+  resolution: "dotenv@npm:16.4.5"
+  checksum: 10c0/48d92870076832af0418b13acd6e5a5a3e83bb00df690d9812e94b24aff62b88ade955ac99a05501305b8dc8f1b0ee7638b18493deb6fe93d680e5220936292f
   languageName: node
   linkType: hard
 
@@ -1339,6 +1387,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-browserify@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "path-browserify@npm:1.0.1"
+  checksum: 10c0/8b8c3fd5c66bd340272180590ae4ff139769e9ab79522e2eb82e3d571a89b8117c04147f65ad066dccfb42fcad902e5b7d794b3d35e0fd840491a8ddbedf8c66
+  languageName: node
+  linkType: hard
+
 "path-key@npm:^3.1.0":
   version: 3.1.1
   resolution: "path-key@npm:3.1.1"
@@ -1751,6 +1806,16 @@ __metadata:
   version: 0.1.13
   resolution: "ts-interface-checker@npm:0.1.13"
   checksum: 10c0/232509f1b84192d07b81d1e9b9677088e590ac1303436da1e92b296e9be8e31ea042e3e1fd3d29b1742ad2c959e95afe30f63117b8f1bc3a3850070a5142fea7
+  languageName: node
+  linkType: hard
+
+"ts-morph@npm:^24.0.0":
+  version: 24.0.0
+  resolution: "ts-morph@npm:24.0.0"
+  dependencies:
+    "@ts-morph/common": "npm:~0.25.0"
+    code-block-writer: "npm:^13.0.3"
+  checksum: 10c0/2a0813ba428a154966d4038901f6c32457a60870936b23778f2629433257f87d1881fc4ecae7b791a223a88c2edf96aaac9fb0f88bf34d3c652af8c09c4f43bc
   languageName: node
   linkType: hard
 

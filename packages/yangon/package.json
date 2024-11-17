@@ -1,6 +1,7 @@
 {
     "name": "@yangon-framework/core",
     "version": "0.0.1-beta",
+    "description": "A Discord bot framework utilizing decorators.",
     "devDependencies": {
         "@yangon-framework/tsconfig": "workspace:^",
         "eris": "^0.18.0"

@@ -1,0 +1,8 @@
+{
+    "extends": "@yangon-framework/tsconfig",
+    "include": ["./src/**/*.ts"],
+    "compilerOptions": {
+        "declaration": false,
+        "outDir": "./dist"
+    }
+}

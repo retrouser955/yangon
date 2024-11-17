@@ -28,7 +28,7 @@ export class BaseCommandOption<R extends YangonChatInputArgs, T extends boolean 
         this.description = description;
         this.required = required || false;
         this.raw = option;
-        this.value = option?.value as NotInCommand<T, R>
+        this.value = (option?.value as NotInCommand<T, R>)
         this.at = options.at
     }
 

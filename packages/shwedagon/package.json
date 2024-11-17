@@ -1,0 +1,16 @@
+{
+    "name": "@yangon-framework/shwedagon",
+    "description": "A parser that parse comments into usable code for @yangon-framework/core",
+    "version": "0.0.1-beta",
+    "dependencies": {
+        "ts-morph": "^24.0.0"
+    },
+    "devDependencies": {
+        "@yangon-framework/tsconfig": "workspace:^",
+        "typescript": "^5.6.3"
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "npm run build && node dist/index.js"
+    }
+}

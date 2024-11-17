@@ -4,16 +4,16 @@ import { commands } from "../Cache/CommandMap";
 import { CommandBuilder } from "../../Commands/Builders/CommandBuilder";
 import { BaseCommandOption } from "../../Commands/Options";
 
-export type YangonChatInputExecuteFunction = (ctx: CommandInteraction, ...args: YangonChatInputExecuteFunctionArgs<true>[]) => any;
+export type YangonChatInputExecuteFunction = (ctx: CommandInteraction, ...args: any[]) => any;
 export type YangonChatInputExecuteFunctionCompiled = (ctx: CommandInteraction) => any;
 
 export function Command(description: string) {
     return function(
-        target: { [key: string]: YangonChatInputExecuteFunction },
+        target: any,
         commandName: string,
         deco: TypedPropertyDescriptor<YangonChatInputExecuteFunction>
     ) {
-        const originalFn = target[commandName]
+        const originalFn = target[commandName] as YangonChatInputExecuteFunction
         if(!originalFn) throw new Error("Something went wrong")
 
         let command = commands.get(commandName)
@@ -35,7 +35,6 @@ export function Command(description: string) {
 
                     return aOrigin.at! - bOrigin.at!
                 }).map((v) => BaseCommandOption.from(v as YangonChatInputArgs)) as YangonChatInputExecuteFunctionArgs<true>[]
-
                 originalFn(ctx, ...commandOptions)
             } else {
                 originalFn(ctx)

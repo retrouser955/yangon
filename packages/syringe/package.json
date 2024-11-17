@@ -1,10 +1,12 @@
 {
   "name": "@yangon-framework/syringe",
+  "description": "Dependency injector for @yangon-framework/core",
   "packageManager": "yarn@4.5.1",
   "devDependencies": {
     "@yangon-framework/tsconfig": "workspace:^"
   },
   "scripts": {
     "build": "tsup"
-  }
+  },
+  "main": "./dist/index.js"
 }

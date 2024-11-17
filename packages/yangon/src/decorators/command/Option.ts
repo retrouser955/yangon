@@ -2,7 +2,6 @@ import { CommandBuilder } from "../../Commands/Builders/CommandBuilder";
 import { BooleanOption, ChannelOption, IntegerOption, MentionableOption, NumberOption, RoleOption, StringOption, UserOption, YangonChoices } from "../../Commands/Options";
 import { YangonChatInputExecuteFunctionArgs, YangonOptionTypeStrings } from "../../types/types";
 import { commands } from "../Cache/CommandMap";
-import { YangonChatInputExecuteFunction } from "./Command";
 
 export interface YangonBuildOption {
     type: YangonOptionTypeStrings,
@@ -23,7 +22,7 @@ export function extractArgs(func: string, at: number) {
     const argsRaw = func.match(FUNCTION_REGEX)
     if(!argsRaw) throw new Error("INVALID FUNCTION")
     
-    return argsRaw[0].split(",").map(v => v.trim())[at]
+    return argsRaw[0].replace("(", "").replace(")", "").split(",").map(v => v.trim())[at]
 }
 
 export type YangonBuildOptionWithChoices<T extends (string|number)> = YangonBuildOption & { choices?: YangonChoices<T> }
@@ -52,7 +51,7 @@ export function buildOption(option: YangonBuildOption): YangonChatInputExecuteFu
 }
 
 export function Option(description: string, required: boolean, options?: YangonCommandParamsOption) {
-    return function(target: { [key: string]: YangonChatInputExecuteFunction }, cmdName: string, deco: number) {
+    return function(target: any, cmdName: string, deco: number) {
         let command = commands.get(cmdName)
 
         if(!command) {
@@ -73,5 +72,7 @@ export function Option(description: string, required: boolean, options?: YangonC
         })
 
         command.addOption(option)
+
+        commands.set(cmdName, command)
     }
 }

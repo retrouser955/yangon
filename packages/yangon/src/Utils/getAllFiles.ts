@@ -1,5 +1,5 @@
 import { readdirSync } from "fs";
-import path, { join } from "path";
+import { join } from "path";
 
 export function getAllFiles(dir: string) {
     const allFilePaths: string[] = []

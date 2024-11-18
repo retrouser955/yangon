@@ -3,6 +3,7 @@
   "packageManager": "yarn@4.5.1",
   "dependencies": {
     "@yangon-framework/core": "workspace:^",
+    "@yangon-framework/shwedagon": "workspace:^",
     "@yangon-framework/syringe": "workspace:^",
     "dotenv": "^16.4.5",
     "eris": "^0.18.0"
@@ -12,7 +13,7 @@
     "typescript": "^5.6.3"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "yangon",
     "start": "npm run build && node dist/index.js"
   }
 }

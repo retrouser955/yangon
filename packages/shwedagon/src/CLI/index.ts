@@ -1,5 +1,4 @@
 #!usr/bin/env node
-import ansiColors from "ansi-colors"
 import path from "path"
 import { getCompilerOptionsFromTsConfig } from "ts-morph"
 import YangonTransformer from "../Transformer/YangonTransformer"
@@ -11,8 +10,6 @@ const TS_CONFIG_PATH = path.join(process.cwd(), DEFAULT_TSCONFIG)
 const config = getCompilerOptionsFromTsConfig(TS_CONFIG_PATH)
 
 config.options.outDir = config.options.outDir?.replace(process.cwd(), "")
-
-if(config.errors.length !== 0) console.log(ansiColors.yellow(`Cannot find tsconfig.json at ${TS_CONFIG_PATH}... Falling to default config`))
 
 const builder = new YangonTransformer(config.options)
 

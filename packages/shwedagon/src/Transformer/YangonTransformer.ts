@@ -3,6 +3,7 @@ import { globSync } from "glob"
 import path, { join } from "path"
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs"
 import { execSync } from "child_process"
+import ansi from "ansi-colors"
 
 function trimComments(comment: string) {
     if (!comment.startsWith("///")) throw new Error('Unable to trim comments that does not start with ///')
@@ -110,7 +111,18 @@ export default class YangonTransformer {
                 const commandDecorator = method.getDecorator("Command")
                 if (!commandDecorator) continue
                 const comments = commandDecorator.getLeadingCommentRanges()
-                if (comments.length === 0) throw new Error("No commend description found")
+                if (comments.length === 0) {
+                    console.log(
+                        `Command description not found at ${method.getName()} command
+
+──> ${ansi.gray(`${name}:${method.getStartLineNumber(false)}:${method.getStartLinePos(false)}`)}
+| ${ansi.green("/// Command description")}
+| ${ansi.red("^^^^^^ This is needed")}
+| @${ansi.yellowBright(commandDecorator.getName())}(...)
+`
+                    )
+                    throw new Error("No commend description found")
+                }
                 if (comments.length > 1) console.warn("There are more than one comments to this command. Only counting the 1st one.")
                 const comment = comments[0].getText()
 
@@ -124,6 +136,16 @@ export default class YangonTransformer {
                     if (!deco) continue;
 
                     const descriptions = deco.getLeadingCommentRanges()
+                    if (descriptions.length === 0) {
+                        console.log(`Option description not found at ${ansi.bold(method.getName())} for ${param.getName()} option
+                        
+──> ${ansi.gray(`${name}:${param.getStartLineNumber(false)}:${param.getStartLinePos(false)}`)}
+| ${ansi.green("/// Option description")}
+| ${ansi.red("^^^^^^ This is needed")}
+| @${ansi.yellowBright("Option")}(...)
+`)
+                        throw new Error("Missing Option description")
+                    }
                     if (descriptions.length > 1) console.warn("There are more than one comments to this command. Only counting the 1st one.")
 
                     const desc = descriptions[0].getText()

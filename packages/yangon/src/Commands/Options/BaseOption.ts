@@ -19,7 +19,7 @@ export class BaseCommandOption<R extends YangonChatInputArgs, T extends boolean 
     description: InCommand<T, string>;
     required: boolean;
     raw: NotInCommand<T, YangonChatInputArgs>
-    value: NotInCommand<T, R>;
+    value: NotInCommand<T, R['value']>;
     at: InCommand<T, number>
 
     constructor(options: BaseCommandOptions<T>, option: NotInCommand<T, YangonChatInputArgs>) {
@@ -28,7 +28,7 @@ export class BaseCommandOption<R extends YangonChatInputArgs, T extends boolean 
         this.description = description;
         this.required = required || false;
         this.raw = option;
-        this.value = (option?.value as NotInCommand<T, R>)
+        this.value = (option?.value as NotInCommand<T, R['value']>)
         this.at = options.at
     }
 

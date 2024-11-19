@@ -29,12 +29,16 @@ export function Command(description: string) {
             if(ctx.data.options) {
                 const allOptions = commands.get(ctx.data.name)!.options
 
-                const commandOptions = ctx.data.options.sort((a, b) => {
-                    const aOrigin = allOptions.get(a.name)!
-                    const bOrigin = allOptions.get(b.name)!
-
-                    return aOrigin.at! - bOrigin.at!
-                }).map((v) => BaseCommandOption.from(v as YangonChatInputArgs)) as YangonChatInputExecuteFunctionArgs<true>[]
+                const commandOptions = Object.values(Object.fromEntries(allOptions.entries())).sort((a, b) => {
+                    return a.at - b.at
+                }).map(v => {
+                    const opt = ctx.data.options?.find((opt) => opt.name === v.name)
+                    if(opt) {
+                        return BaseCommandOption.from(opt as YangonChatInputArgs)
+                    } else {
+                        return undefined
+                    }
+                })
                 originalFn(ctx, ...commandOptions)
             } else {
                 originalFn(ctx)

@@ -11,6 +11,6 @@ export default class SayCommand {
         @Option()
         content: StringOption
     ) {
-
+        ctx.createMessage(content.value)
     }
 }

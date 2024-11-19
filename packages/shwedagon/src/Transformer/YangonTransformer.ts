@@ -1,7 +1,8 @@
 import { Project, ts, type FileSystemHost } from "ts-morph"
 import { globSync } from "glob"
 import path, { join } from "path"
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs"
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs"
+import { execSync } from "child_process"
 
 function trimComments(comment: string) {
     if (!comment.startsWith("///")) throw new Error('Unable to trim comments that does not start with ///')
@@ -29,8 +30,19 @@ export default class YangonTransformer {
     }
 
     compile() {
+        // This is janky. I will fix this later
+        const fileName = "./.yagon-" + Date.now() + ".json"
+        const tsconfig = readFileSync(join(process.cwd(), "tsconfig.json")) // make this configurable
+        writeFileSync(fileName, tsconfig)
+        let errored = false
+        try {
+            execSync(`npx tsc --project ${fileName}`, { stdio: "inherit" })
+        } catch (error) {
+            errored = true
+        }
+        rmSync(fileName)
+        if(errored) throw new Error('Failed to compile')
         this.project.emitSync()
-        this.fs.readDirSync("/")
     }
 
     getAllFile(path: string) {

@@ -10,8 +10,12 @@ const client = injector(Client, `Bot ${process.env.TOKEN}`, {
     intents: ['guilds']
 })
 
-const frameowrk = injector(Yangon, client, {
+injector(Yangon, client, {
     commands: join(__dirname, "commands")
 })
 
-console.log(frameowrk.commands)
+client.once("ready", () => {
+    console.log(`${client.user.username} is ready!`)
+})
+
+client.connect()

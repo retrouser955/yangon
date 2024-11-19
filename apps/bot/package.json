@@ -14,6 +14,6 @@
   },
   "scripts": {
     "build": "yangon",
-    "start": "npm run build && node dist/index.js"
+    "start": "yarn build && node dist/index.js"
   }
 }

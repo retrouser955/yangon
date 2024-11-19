@@ -82,11 +82,21 @@ export default class YangonTransformer {
     }
 
     addDirWithGlob(glob: string) {
+        const errors: string[] = []
         const files = globSync(glob)
         const paths = files.map(v => path.join(process.cwd(), v))
         for (let i = 0; i < paths.length; i++) {
             const content = readFileSync(paths[i], "utf-8")
-            this.createFile(files[i], content)
+            const error = this.createFile(files[i], content)
+            if(error.length > 0) {
+                errors.push(
+                    `${ansi.bgBlack(ansi.red(" ERROR "))} ${files[i]}\n\n${error.join("\n")}`
+                )
+            }
+        }
+        if(errors.length > 0) {
+            console.log(errors.join("\n\n"))
+            throw new Error("Failed to compile due to the above errors")
         }
     }
 
@@ -95,6 +105,7 @@ export default class YangonTransformer {
     }
 
     createFile(name: string, input: string) {
+        const errors = []
         const src = this.project.createSourceFile(name, input)
         const imports = src.getImportDeclarations().filter((i) => i.getModuleSpecifier().getText().replace(/("|')/g, "") === "@yangon-framework/shwedagon")
         for (const mod of imports) {
@@ -112,7 +123,7 @@ export default class YangonTransformer {
                 if (!commandDecorator) continue
                 const comments = commandDecorator.getLeadingCommentRanges()
                 if (comments.length === 0) {
-                    console.log(
+                    errors.push(
                         `Command description not found at ${method.getName()} command
 
 ──> ${ansi.gray(`${name}:${method.getStartLineNumber(false)}:${method.getStartLinePos(false)}`)}
@@ -121,12 +132,12 @@ export default class YangonTransformer {
 | @${ansi.yellowBright(commandDecorator.getName())}(...)
 `
                     )
-                    throw new Error("No commend description found")
-                }
-                if (comments.length > 1) console.warn("There are more than one comments to this command. Only counting the 1st one.")
-                const comment = comments[0].getText()
+                } else if (comments.length > 1) console.warn("There are more than one comments to this command. Only counting the 1st one.")
+                else {
+                    const comment = comments[0].getText()
 
-                commandDecorator.insertArgument(0, `"${trimComments(comment)}"`)
+                    commandDecorator.insertArgument(0, `"${trimComments(comment)}"`)
+                }
 
                 const params = method.getParameters()
                 params.shift() // this is the ctx param
@@ -137,26 +148,26 @@ export default class YangonTransformer {
 
                     const descriptions = deco.getLeadingCommentRanges()
                     if (descriptions.length === 0) {
-                        console.log(`Option description not found at ${ansi.bold(method.getName())} for ${param.getName()} option
+                        errors.push(`Option description not found at ${ansi.bold(method.getName())} for ${param.getName()} option
                         
 ──> ${ansi.gray(`${name}:${param.getStartLineNumber(false)}:${param.getStartLinePos(false)}`)}
 | ${ansi.green("/// Option description")}
 | ${ansi.red("^^^^^^ This is needed")}
 | @${ansi.yellowBright("Option")}(...)
 `)
-                        throw new Error("Missing Option description")
+                    } else if (descriptions.length > 1) console.warn("There are more than one comments to this command. Only counting the 1st one.")
+                    else {
+                        const desc = descriptions[0].getText()
+                        deco.insertArgument(0, `"${trimComments(desc)}"`)
+    
+                        const optional = param.getType()
+                        deco.insertArgument(1, `${!(optional.getText() === "any")}`)
                     }
-                    if (descriptions.length > 1) console.warn("There are more than one comments to this command. Only counting the 1st one.")
-
-                    const desc = descriptions[0].getText()
-                    deco.insertArgument(0, `"${trimComments(desc)}"`)
-
-                    const optional = param.getType()
-                    deco.insertArgument(1, `${!(optional.getText() === "any")}`)
                 }
             }
         }
 
         src.saveSync()
+        return errors
     }
 }

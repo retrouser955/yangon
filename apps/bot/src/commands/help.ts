@@ -4,7 +4,6 @@ import { useDeps } from "@yangon-framework/syringe";
 import type { CommandInteraction } from "eris";
 
 export default class HelpCommand {
-    /// Send a help menu
     @Command()
     help(ctx: CommandInteraction) {
         const yangon = useDeps(Yangon)

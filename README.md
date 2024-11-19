@@ -92,4 +92,5 @@ Now, all we have to do is to change our build script from `tsc` to `yangon`. Yan
 What if we do not set a comment? Our code might crash without a good debugging experience.
 
 > You do not need to worry about this. `yangon` also debugs your code before compiling and if you did not comment your code, it will error.
+
 > ![errors](./images/errors.png)

@@ -1,8 +1,7 @@
 import { Project, ts, type FileSystemHost } from "ts-morph"
 import { globSync } from "glob"
-import path, { join } from "path"
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs"
-import { execSync } from "child_process"
+import path from "path"
+import { readFileSync } from "fs"
 import ansi from "ansi-colors"
 
 function trimComments(comment: string) {
@@ -23,7 +22,7 @@ export default class YangonTransformer {
         if(!options.outDir) options.outDir = "./.yangon"
         this.project = new Project({
             compilerOptions: options,
-            useInMemoryFileSystem: true,
+            // useInMemoryFileSystem: true,
             skipAddingFilesFromTsConfig: true
         })
 
@@ -31,18 +30,16 @@ export default class YangonTransformer {
     }
 
     compile() {
-        // This is janky. I will fix this later
-        const fileName = "./.yagon-" + Date.now() + ".json"
-        const tsconfig = readFileSync(join(process.cwd(), "tsconfig.json")) // make this configurable
-        writeFileSync(fileName, tsconfig)
-        let errored = false
-        try {
-            execSync(`npx tsc --project ${fileName}`, { stdio: "inherit" })
-        } catch (error) {
-            errored = true
+        this.project.resolveSourceFileDependencies()
+        const dia = this.project.getPreEmitDiagnostics()
+        if (dia.length > 0) {
+            for (const message of dia) {
+                console.log(`${ansi.bgBlack(ansi.red(" ERROR "))}  ${message.getSourceFile()?.getFilePath()}:${message.getLineNumber()}:${message.getStart()}
+| ${message.getMessageText()}`)
+            }
+
+            process.exit(1)
         }
-        rmSync(fileName)
-        if(errored) throw new Error('Failed to compile')
         this.project.emitSync()
     }
 
@@ -66,21 +63,6 @@ export default class YangonTransformer {
         return allFilePaths
     }
 
-    saveOutFiles() {
-        const options = this.project.getCompilerOptions()
-        const outDir = options.outDir!
-        const files = this.getAllFile(outDir.replace(process.cwd(), ""))
-        for (const file of files) {
-            const content = this.fs.readFileSync(file)
-            const dirPathArr = file.split("/")
-            dirPathArr.pop()
-            const dirPath = dirPathArr.join("/")
-            if(!existsSync(process.cwd() + dirPath)) mkdirSync(process.cwd() + dirPath, { recursive: true })
-            console.log("writing to " + path.join(process.cwd(), file))
-            writeFileSync(path.join(process.cwd(), file), content)
-        }
-    }
-
     addDirWithGlob(glob: string) {
         const errors: string[] = []
         const files = globSync(glob)
@@ -96,7 +78,7 @@ export default class YangonTransformer {
         }
         if(errors.length > 0) {
             console.log(errors.join("\n\n"))
-            throw new Error("Failed to compile due to the above errors")
+            process.exit(1)
         }
     }
 
@@ -106,7 +88,9 @@ export default class YangonTransformer {
 
     createFile(name: string, input: string) {
         const errors = []
-        const src = this.project.createSourceFile(name, input)
+        const src = this.project.createSourceFile(name, input, {
+            overwrite: true
+        })
         const imports = src.getImportDeclarations().filter((i) => i.getModuleSpecifier().getText().replace(/("|')/g, "") === "@yangon-framework/shwedagon")
         for (const mod of imports) {
             mod.getModuleSpecifier().replaceWithText("\"@yangon-framework/core\"")
@@ -167,7 +151,7 @@ export default class YangonTransformer {
             }
         }
 
-        src.saveSync()
+        // src.saveSync()
         return errors
     }
 }

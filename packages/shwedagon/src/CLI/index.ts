@@ -42,4 +42,4 @@ for (const glob of fileGlob) {
 builder.compile(spinner)
 
 spinner.stop()
-console.log(`${ansiColors.bgBlue(ansiColors.white(" SHWEDAGON "))} Finished transpiling TypeScript`)
+console.log(`            Finished transpiling TypeScript`)

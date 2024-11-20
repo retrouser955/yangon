@@ -29,10 +29,11 @@ export default class YangonTransformer {
         this.fs = this.project.getFileSystem()
     }
 
-    compile() {
+    compile(spinner?: import("ora-classic").Ora) {
         this.project.resolveSourceFileDependencies()
         const dia = this.project.getPreEmitDiagnostics()
         if (dia.length > 0) {
+            if(spinner) spinner.fail("Failed due to type errors")
             console.log(this.project.formatDiagnosticsWithColorAndContext(dia))
 
             process.exit(1)
@@ -40,27 +41,7 @@ export default class YangonTransformer {
         this.project.emitSync()
     }
 
-    getAllFile(path: string) {
-        const allFilePaths: string[] = []
-
-        const getFiles = (p: string) => {
-            const dir = this.fs.readDirSync(p)
-
-            for (const file of dir) {
-                if(file.isDirectory) {
-                    getFiles(file.name)
-                } else {
-                    allFilePaths.push(file.name)
-                }
-            }
-        }
-
-        getFiles(path)
-    
-        return allFilePaths
-    }
-
-    addDirWithGlob(glob: string) {
+    addDirWithGlob(glob: string, spinner?: import("ora-classic").Ora) {
         const errors: string[] = []
         const files = globSync(glob)
         const paths = files.map(v => path.join(process.cwd(), v))
@@ -74,6 +55,7 @@ export default class YangonTransformer {
             }
         }
         if(errors.length > 0) {
+            if(spinner) spinner.fail("Transpilation failed due to the following errors")
             console.log(errors.join("\n\n"))
             process.exit(1)
         }

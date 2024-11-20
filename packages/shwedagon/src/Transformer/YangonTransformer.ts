@@ -33,10 +33,7 @@ export default class YangonTransformer {
         this.project.resolveSourceFileDependencies()
         const dia = this.project.getPreEmitDiagnostics()
         if (dia.length > 0) {
-            for (const message of dia) {
-                console.log(`${ansi.bgBlack(ansi.red(" ERROR "))}  ${message.getSourceFile()?.getFilePath()}:${message.getLineNumber()}:${message.getStart()}
-| ${message.getMessageText()}`)
-            }
+            console.log(this.project.formatDiagnosticsWithColorAndContext(dia))
 
             process.exit(1)
         }

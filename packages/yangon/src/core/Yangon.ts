@@ -35,14 +35,14 @@ export class Yangon {
 
         this.commands = commands
         this.client.once("ready", () => {
-            const iter = Object.values(Object.fromEntries(this.commands.entries()))
+            const iter = Array.from(this.commands.values())
             for (const command of iter) {
                 console.log(`[YANGON] CREATING COMMAND: ${command.name}`)
                 client.createCommand({
                     name: command.name!,
                     description: command.description!,
                     type: Constants.ApplicationCommandTypes.CHAT_INPUT,
-                    options: Object.values(Object.fromEntries(command.options.entries())).map((v) => {
+                    options: Array.from(command.options.values()).map((v) => {
                         const defaultOption = {
                             name: v.name,
                             description: v.description,

@@ -29,7 +29,7 @@ export function Command(description: string) {
             if(ctx.data.options) {
                 const allOptions = commands.get(ctx.data.name)!.options
 
-                const commandOptions = Object.values(Object.fromEntries(allOptions.entries())).sort((a, b) => {
+                const commandOptions = Array.from(allOptions.values()).sort((a, b) => {
                     return a.at - b.at
                 }).map(v => {
                     const opt = ctx.data.options?.find((opt) => opt.name === v.name)

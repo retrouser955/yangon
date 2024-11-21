@@ -8,7 +8,7 @@ export default class HelpCommand {
     @Command()
     help(ctx: CommandInteraction) {
         const yangon = useDeps(Yangon)
-        const commands = Object.values(Object.fromEntries(yangon.commands.entries()))
+        const commands = Array.from(yangon.commands.values())
 
         const mapper = commands.map(v => `**${v.name}**\n> ${v.description}\n`)
         const helpDesc = mapper.join("\n")

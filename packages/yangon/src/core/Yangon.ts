@@ -4,18 +4,31 @@ import { getAllFiles } from "../Utils/getAllFiles";
 import { commands } from "../decorators";
 import type { CommandBuilder } from "../Commands/Builders/CommandBuilder";
 import { BooleanOption, ChannelOption, IntegerOption, MentionableOption, NumberOption, RoleOption, StringOption, UserOption } from "../Commands/Options";
+import { provideContext } from "./contextProvider";
+import { TypedEmitter } from "tiny-typed-emitter";
 
 export interface YangonInitOptions {
     commands: string;
     debug?: boolean;
 }
 
-export class Yangon {
+export const Events = {
+  CommandNotFound: "commandNotFound"
+} as const;
+
+export type Events = (typeof Events)[keyof typeof Events];
+
+export interface YangonEvents {
+  [Events.CommandNotFound]: (ctx: CommandInteraction) => any;
+}
+
+export class Yangon extends TypedEmitter<YangonEvents> {
     client: Client;
     options: YangonInitOptions;
     commands: Map<string, CommandBuilder>
 
     constructor(client: Client, options: YangonInitOptions) {
+        super()
         this.client = client;
         this.options = options;
 
@@ -102,14 +115,20 @@ export class Yangon {
         // event listener
         this.client.on("interactionCreate", (ctx) => {
             if (ctx instanceof CommandInteraction) {
-                return void this.__handleChatInput(ctx)
+                return void provideContext({ ctx, client: this.client }, () => {
+                  return void this.__handleChatInput(ctx)
+                })
             }
         })
     }
 
     __handleChatInput(ctx: CommandInteraction) {
         const cmd = this.commands.get(ctx.data.name)
-        if (!cmd) return // TODO: Emit command not found to the event listener
+        if (!cmd) {
+          if(this.listeners(Events.CommandNotFound).length === 0) throw new Error("Command Not Found! Make sure you have registered this with yangon")
+          this.emit(Events.CommandNotFound, ctx)
+          return  
+        }
         cmd.execute!(ctx)
     }
 }

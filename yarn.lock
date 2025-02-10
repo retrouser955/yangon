@@ -2033,6 +2033,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tiny-typed-emitter@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "tiny-typed-emitter@npm:2.1.0"
+  checksum: 10c0/522bed4c579ee7ee16548540cb693a3d098b137496110f5a74bff970b54187e6b7343a359b703e33f77c5b4b90ec6cebc0d0ec3dbdf1bd418723c5c3ce36d8a2
+  languageName: node
+  linkType: hard
+
 "tinyexec@npm:^0.3.1":
   version: 0.3.1
   resolution: "tinyexec@npm:0.3.1"
@@ -2356,6 +2363,7 @@ __metadata:
     "@swc/core": "npm:^1.9.2"
     "@types/node": "npm:^22.9.0"
     prettier: "npm:^3.2.5"
+    tiny-typed-emitter: "npm:^2.1.0"
     tsup: "npm:^8.3.5"
     turbo: "npm:^2.2.3"
     typescript: "npm:^5.6.3"

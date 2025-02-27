@@ -6,6 +6,9 @@ import type { CommandBuilder } from "../Commands/Builders/CommandBuilder";
 import { BooleanOption, ChannelOption, IntegerOption, MentionableOption, NumberOption, RoleOption, StringOption, UserOption } from "../Commands/Options";
 import { provideContext } from "./contextProvider";
 import { TypedEmitter } from "tiny-typed-emitter";
+import { AsyncContextProvider } from "../hooks/AsyncTracker";
+import { HookData } from "../hooks/createHooks";
+import { provideGlobalTracker } from "../hooks/Tracker";
 
 export interface YangonInitOptions {
     commands: string;
@@ -25,7 +28,14 @@ export interface YangonEvents {
 export class Yangon extends TypedEmitter<YangonEvents> {
     client: Client;
     options: YangonInitOptions;
-    commands: Map<string, CommandBuilder>
+    commands: Map<string, CommandBuilder>;
+    #context = new AsyncContextProvider()
+
+    __provideContext(data: Omit<HookData, "yangon">, callback: () => void) {
+      provideGlobalTracker(this, () => {
+        this.#context.provideContext(data, callback)
+      })
+    }
 
     constructor(client: Client, options: YangonInitOptions) {
         super()
@@ -122,6 +132,10 @@ export class Yangon extends TypedEmitter<YangonEvents> {
         })
     }
 
+    __getContext() {
+      return this.#context.getContext()
+    }
+
     __handleChatInput(ctx: CommandInteraction) {
         const cmd = this.commands.get(ctx.data.name)
         if (!cmd) {
@@ -129,6 +143,10 @@ export class Yangon extends TypedEmitter<YangonEvents> {
           this.emit(Events.CommandNotFound, ctx)
           return  
         }
-        cmd.execute!(ctx)
+        this.__provideContext({
+          ctx
+        }, () => {
+          cmd.execute!(ctx)
+        })
     }
 }

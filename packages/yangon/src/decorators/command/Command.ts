@@ -1,5 +1,5 @@
 import type { CommandInteraction } from "eris";
-import type { YangonChatInputArgs, YangonChatInputExecuteFunctionArgs } from "../../types/types";
+import type { YangonChatInputArgs } from "../../types/types";
 import { commands } from "../Cache/CommandMap";
 import { CommandBuilder } from "../../Commands/Builders/CommandBuilder";
 import { BaseCommandOption } from "../../Commands/Options";

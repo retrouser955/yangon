@@ -1,6 +1,10 @@
 import type { InteractionDataOptionsString, InteractionDataOptionsBoolean, InteractionDataOptionsChannel, InteractionDataOptionsInteger, InteractionDataOptionsMentionable, InteractionDataOptionsNumber, InteractionDataOptionsRole, InteractionDataOptionsUser } from "eris";
 import type { BooleanOption, ChannelOption, IntegerOption, MentionableOption, NumberOption, RoleOption, StringOption, UserOption } from "../Commands/Options";
 
+export enum ReservedWords {
+  ButtonIdSplitter = "-"
+}
+
 export type YangonChatInputArgs = (
     InteractionDataOptionsString |
     InteractionDataOptionsBoolean |

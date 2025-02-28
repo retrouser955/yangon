@@ -1,14 +1,15 @@
 import type { ApplicationCommandOptionsBoolean, ApplicationCommandOptionsChannel, ApplicationCommandOptionsInteger, ApplicationCommandOptionsMentionable, ApplicationCommandOptionsNumber, ApplicationCommandOptionsRole, ApplicationCommandOptionsString, ApplicationCommandOptionsUser, Client } from "eris";
-import { CommandInteraction, Constants } from "eris";
+import { CommandInteraction, ComponentInteraction, Constants } from "eris";
 import { getAllFiles } from "../Utils/getAllFiles";
 import { commands } from "../decorators";
 import type { CommandBuilder } from "../Commands/Builders/CommandBuilder";
 import { BooleanOption, ChannelOption, IntegerOption, MentionableOption, NumberOption, RoleOption, StringOption, UserOption } from "../Commands/Options";
-import { provideContext } from "./contextProvider";
 import { TypedEmitter } from "tiny-typed-emitter";
 import { AsyncContextProvider } from "../hooks/AsyncTracker";
 import { HookData } from "../hooks/createHooks";
 import { provideGlobalTracker } from "../hooks/Tracker";
+import { BUTTON_CACHE, ButtonInteraction } from "../decorators/Button/Button";
+import { ReservedWords } from "../types/types";
 
 export interface YangonInitOptions {
     commands: string;
@@ -16,13 +17,15 @@ export interface YangonInitOptions {
 }
 
 export const Events = {
-  CommandNotFound: "commandNotFound"
+  CommandNotFound: "commandNotFound",
+  ButtonNotFound: "buttonNotFound"
 } as const;
 
 export type Events = (typeof Events)[keyof typeof Events];
 
 export interface YangonEvents {
   [Events.CommandNotFound]: (ctx: CommandInteraction) => any;
+  [Events.ButtonNotFound]: (ctx: ButtonInteraction) => any;
 }
 
 export class Yangon extends TypedEmitter<YangonEvents> {
@@ -124,16 +127,34 @@ export class Yangon extends TypedEmitter<YangonEvents> {
 
         // event listener
         this.client.on("interactionCreate", (ctx) => {
-            if (ctx instanceof CommandInteraction) {
-                return void provideContext({ ctx, client: this.client }, () => {
-                  return void this.__handleChatInput(ctx)
-                })
-            }
+            if (ctx instanceof CommandInteraction) return void this.__handleChatInput(ctx)
+            if (ctx instanceof ComponentInteraction && ctx.data.component_type === Constants.ComponentTypes.BUTTON) return void this.__handleButtonInput(ctx as ButtonInteraction)
         })
     }
 
     __getContext() {
       return this.#context.getContext()
+    }
+
+    __handleButtonInput(ctx: ButtonInteraction) {
+      const params = ctx.data.custom_id.split(ReservedWords.ButtonIdSplitter)
+
+      const name = params.shift()
+
+      if(!name) throw new Error("Button without a CustomID found")
+
+      const button = BUTTON_CACHE.get(name)
+      if(!button) {
+        if(this.listeners(Events.ButtonNotFound).length === 0) throw new Error("Button Not Found! Make sure you have registered this with yangon or handle a `buttonNotFound` event")
+        this.emit(Events.ButtonNotFound, ctx)
+        return
+      }
+
+      this.__provideContext({
+        ctx
+      }, () => {
+        button.execute(ctx)
+      })
     }
 
     __handleChatInput(ctx: CommandInteraction) {
